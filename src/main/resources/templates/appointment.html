@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CareSync - Appointments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Plus Jakarta Sans', sans-serif; } ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; } .bg-mesh { background-color: #f8fafc; background-image: radial-gradient(at 0% 0%, hsla(217,100%,96%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(228,100%,97%,1) 0, transparent 50%); } </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex">
+
+<!-- SIDEBAR -->
+<aside class="w-64 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col z-30 shrink-0 shadow-[4px_0_24px_rgba(0,0,0,0.1)]">
+    <div class="h-24 flex items-center px-6 border-b border-slate-800/50">
+        <div class="flex items-center gap-3"><div class="bg-blue-500 p-2.5 rounded-xl text-white shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg></div><h1 class="text-2xl font-extrabold text-white tracking-wide">Care<span class="text-blue-400">Sync</span></h1></div>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-8 px-4 space-y-2">
+        <p class="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Menu</p>
+        <a href="patient.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Patients</a>
+        <a href="doctor.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Doctors</a>
+        <a href="department.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Departments</a>
+        <a href="appointment.html" class="flex items-center gap-3 px-4 py-3.5 bg-blue-600 text-white rounded-2xl font-semibold shadow-md shadow-blue-900/20">Appointments</a>
+        <a href="prescription.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Prescriptions</a>
+        <a href="payment.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Payments</a>
+        <a href="feedback.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Feedbacks</a>
+    </nav>
+    <div class="p-4 border-t border-slate-800/50"><button onclick="logout()" class="flex items-center gap-3 w-full px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-rose-400 rounded-2xl font-medium transition-colors">Log out</button></div>
+</aside>
+
+<main class="flex-1 flex flex-col h-screen overflow-hidden relative bg-mesh">
+    <header class="relative z-10 h-24 flex items-center justify-between px-8 shrink-0 bg-white/40 backdrop-blur-xl border-b border-white/60 shadow-sm">
+        <div><h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Appointment Desk</h2></div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto p-6 md:p-8 relative z-10">
+        <div class="max-w-[1400px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-8">
+
+            <!-- BOOKING FORM -->
+            <div class="xl:col-span-4">
+                <div class="bg-white/70 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white p-8 sticky top-0">
+                    <h2 class="text-2xl font-extrabold text-slate-800 mb-6">Book Visit</h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Select Patient</label>
+                            <select id="patientSelect" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border outline-none"><option value="">Loading...</option></select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Select Department</label>
+                            <select id="deptSelect" onchange="filterDoctors()" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border outline-none"><option value="">Loading...</option></select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Select Doctor</label>
+                            <select id="doctorSelect" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border outline-none"><option value="">Select Department First...</option></select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Date</label><input type="date" id="apptDate" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border outline-none"></div>
+                            <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Time</label><input type="time" id="apptTime" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border outline-none"></div>
+                        </div>
+
+                        <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Reason for Visit</label><textarea id="reason" rows="2" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border outline-none resize-none"></textarea></div>
+
+                        <button onclick="bookAppointment()" class="w-full mt-6 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold py-4 rounded-2xl shadow-lg hover:-translate-y-0.5 transition-transform">Schedule Appointment</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- APPOINTMENT TABLE -->
+            <div class="xl:col-span-8">
+                <div class="bg-white/70 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white overflow-hidden h-full flex flex-col">
+                    <div class="p-8 border-b border-slate-100 flex justify-between items-center"><h2 class="text-xl font-extrabold text-slate-800">Upcoming Appointments</h2></div>
+                    <div class="overflow-x-auto flex-1 p-2">
+                        <table class="w-full text-left border-collapse min-w-[850px]">
+                            <thead>
+                            <tr>
+                                <th class="py-4 pl-8 pr-4 text-[11px] font-extrabold text-slate-400 uppercase tracking-widest border-b border-slate-100">Patient & Doctor</th>
+                                <th class="px-4 py-4 text-[11px] font-extrabold text-slate-400 uppercase tracking-widest border-b border-slate-100">Date & Time</th>
+                                <th class="px-4 py-4 text-[11px] font-extrabold text-slate-400 uppercase tracking-widest border-b border-slate-100">Status</th>
+                                <th class="py-4 pr-8 pl-4 text-right text-[11px] font-extrabold text-slate-400 uppercase tracking-widest border-b border-slate-100">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    const APPT_API = "http://localhost:8080/appointments";
+    const PATIENTS_API = "http://localhost:8080/patients";
+    const DOCTORS_API = "http://localhost:8080/doctors";
+    const DEPTS_API = "http://localhost:8080/departments";
+
+    let allDoctors = [];
+
+    async function initData() {
+        try {
+            // Load Patients
+            const pRes = await fetch(PATIENTS_API);
+            const patients = await pRes.json();
+            let pOpts = '<option value="" disabled selected>Select Patient...</option>';
+            patients.forEach(p => pOpts += `<option value="${p.name}">${p.name}</option>`);
+            document.getElementById('patientSelect').innerHTML = pOpts;
+
+            // Load Depts
+            const dRes = await fetch(DEPTS_API);
+            const depts = await dRes.json();
+            let dOpts = '<option value="" disabled selected>Select Dept...</option>';
+            depts.forEach(d => dOpts += `<option value="${d.name}">${d.name}</option>`);
+            document.getElementById('deptSelect').innerHTML = dOpts;
+
+            // Load Doctors into memory
+            const docRes = await fetch(DOCTORS_API);
+            allDoctors = await docRes.json();
+
+            loadAppointments();
+        } catch (err) { console.error("Failed to load core data."); }
+    }
+
+    // Filters the doctor dropdown based on selected department
+    function filterDoctors() {
+        const selectedDept = document.getElementById('deptSelect').value;
+        const filtered = allDoctors.filter(doc => doc.department === selectedDept);
+        let opts = '<option value="" disabled selected>Select Doctor...</option>';
+        filtered.forEach(doc => opts += `<option value="${doc.name}">${doc.name}</option>`);
+        document.getElementById('doctorSelect').innerHTML = opts;
+    }
+
+    function loadAppointments() {
+        fetch(APPT_API).then(res => res.json()).then(data => {
+            let rows = "";
+            data.forEach(a => {
+                let statusBadge = '';
+                if(a.status === 'Scheduled') statusBadge = `<span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">Scheduled</span>`;
+                else if(a.status === 'Completed') statusBadge = `<span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">Completed</span>`;
+                else statusBadge = `<span class="bg-rose-100 text-rose-700 px-3 py-1 rounded-full text-xs font-bold">Cancelled</span>`;
+
+                rows += `
+                <tr class="group hover:bg-slate-50/50 border-b border-slate-100/50">
+                    <td class="py-4 pl-8 pr-4">
+                        <p class="text-sm font-bold text-slate-800">${a.patientName}</p>
+                        <p class="text-xs font-medium text-slate-500">with ${a.doctorName}</p>
+                    </td>
+                    <td class="px-4 py-4">
+                        <p class="text-sm font-bold text-slate-700">${a.appointmentDate}</p>
+                        <p class="text-xs font-medium text-slate-500">${a.appointmentTime}</p>
+                    </td>
+                    <td class="px-4 py-4">${statusBadge}</td>
+                    <td class="py-4 pr-8 pl-4 text-right">
+                        <button onclick="updateStatus(${a.id}, 'Completed')" class="text-xs px-3 py-2 bg-emerald-50 text-emerald-600 font-bold rounded-lg hover:bg-emerald-100">Done</button>
+                        <button onclick="updateStatus(${a.id}, 'Cancelled')" class="text-xs px-3 py-2 bg-rose-50 text-rose-600 font-bold rounded-lg hover:bg-rose-100 ml-2">Cancel</button>
+                        <button onclick="deleteAppointment(${a.id})" class="text-xs px-3 py-2 text-slate-400 hover:text-red-500 ml-2">Del</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById("tableBody").innerHTML = rows;
+        });
+    }
+
+    async function bookAppointment() {
+        const data = {
+            patientName: document.getElementById('patientSelect').value,
+            doctorName: document.getElementById('doctorSelect').value,
+            appointmentDate: document.getElementById('apptDate').value,
+            appointmentTime: document.getElementById('apptTime').value,
+            reason: document.getElementById('reason').value
+        };
+
+        if(!data.patientName || !data.doctorName || !data.appointmentDate || !data.appointmentTime) {
+            return alert("Please fill out all required fields!");
+        }
+
+        await fetch(APPT_API, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(data) });
+        document.getElementById('reason').value = "";
+        document.getElementById('apptDate').value = "";
+        document.getElementById('apptTime').value = "";
+        loadAppointments();
+    }
+
+    function updateStatus(id, newStatus) {
+        fetch(`${APPT_API}/${id}/status?status=${newStatus}`, { method: "PUT" }).then(() => loadAppointments());
+    }
+
+    function deleteAppointment(id) { if(confirm("Delete record entirely?")) fetch(`${APPT_API}/${id}`,{method:"DELETE"}).then(()=>loadAppointments()); }
+    function logout() { if(confirm("Log out?")) window.location.href = 'auth.html'; }
+
+    initData();
+</script>
+</body>
+</html>

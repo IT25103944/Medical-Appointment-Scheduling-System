@@ -1,0 +1,50 @@
+# Target and Build Folders
+target/
+build/
+bin/
+out/
+.gradle/
+
+# Maven-specific
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# System-specific (macOS)
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+*.atlink
+out/
+
+# Eclipse/STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# VS Code
+.vscode/
+
+# Database Files
+# These rules ensure your SQL scripts are NOT ignored while keeping binary DB files out
+!*.sql
+# *.db
+# *.sqlite
+# *.mwb.bak

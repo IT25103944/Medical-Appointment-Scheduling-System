@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CareSync - Doctor Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .bg-mesh { background-color: #f8fafc; background-image: radial-gradient(at 0% 0%, hsla(217,100%,96%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(228,100%,97%,1) 0, transparent 50%); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex">
+
+<!-- SIDEBAR -->
+<aside class="w-64 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col z-30 shrink-0 shadow-[4px_0_24px_rgba(0,0,0,0.1)]">
+    <div class="h-24 flex items-center px-6 border-b border-slate-800/50">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-500 p-2.5 rounded-xl text-white shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+            </div>
+            <h1 class="text-2xl font-extrabold text-white tracking-wide">Care<span class="text-blue-400">Sync</span></h1>
+        </div>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-8 px-4 space-y-2">
+        <p class="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Menu</p>
+        <a href="patient.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Patients</a>
+        <a href="doctor.html" class="flex items-center gap-3 px-4 py-3.5 bg-blue-600 text-white rounded-2xl font-semibold shadow-md shadow-blue-900/20">Doctors</a>
+        <a href="department.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Departments</a>
+        <a href="appointment.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Appointments</a>
+        <a href="prescription.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Prescriptions</a>
+        <a href="payment.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Billing & Payments</a>
+        <a href="feedback.html" class="flex items-center gap-3 px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-2xl font-medium transition-colors">Patient Feedback</a>
+    </nav>
+    <div class="p-4 border-t border-slate-800/50">
+        <button onclick="logout()" class="flex items-center gap-3 w-full px-4 py-3.5 text-slate-400 hover:bg-slate-800 hover:text-rose-400 rounded-2xl font-medium transition-colors">Log out</button>
+    </div>
+</aside>
+
+<main class="flex-1 flex flex-col h-screen overflow-hidden relative bg-mesh">
+    <header class="relative z-10 h-24 flex items-center justify-between px-8 shrink-0 bg-white/40 backdrop-blur-xl border-b border-white/60 shadow-sm">
+        <div><h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Doctor Directory</h2></div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto p-6 md:p-8 relative z-10">
+        <div class="max-w-[1400px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-8">
+
+            <!-- ADD DOCTOR FORM -->
+            <div class="xl:col-span-4">
+                <div class="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white p-8 sticky top-0">
+                    <h2 class="text-2xl font-extrabold text-slate-800 mb-6">Add New Doctor</h2>
+
+                    <div id="docError" class="hidden bg-red-50 text-red-600 px-4 py-3 rounded-xl border border-red-100 mb-4 font-semibold text-sm"></div>
+                    <div id="docSuccess" class="hidden bg-emerald-50 text-emerald-600 px-4 py-3 rounded-xl border border-emerald-100 mb-4 font-semibold text-sm"></div>
+
+                    <div class="space-y-4">
+                        <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Full Name</label><input id="name" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border border-slate-200/60 focus:bg-white outline-none"></div>
+                        <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Email</label><input id="email" type="email" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border border-slate-200/60 focus:bg-white outline-none"></div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Password</label><div class="relative"><input id="password" type="password" class="w-full bg-slate-100/50 px-5 py-3.5 pr-12 rounded-2xl border outline-none"><button onclick="togglePassword('password')" class="absolute inset-y-0 right-0 pr-4 text-slate-400 hover:text-blue-600 focus:outline-none"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg></button></div></div>
+                            <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Confirm</label><div class="relative"><input id="confirmPassword" type="password" class="w-full bg-slate-100/50 px-5 py-3.5 pr-12 rounded-2xl border outline-none"><button onclick="togglePassword('confirmPassword')" class="absolute inset-y-0 right-0 pr-4 text-slate-400 hover:text-blue-600 focus:outline-none"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg></button></div></div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Department</label><select id="department" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border outline-none"><option value="" disabled selected>Loading...</option></select></div>
+                            <div>
+                                <label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Position</label>
+                                <select id="position" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border outline-none">
+                                    <option value="" disabled selected>Select...</option>
+                                    <option value="Specialist">Specialist</option>
+                                    <option value="Surgeon">Surgeon</option>
+                                    <option value="Vice President (VP)">Vice President (VP)</option>
+                                    <option value="Senior Consultant">Senior Consultant</option>
+                                    <option value="Resident">Resident</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Contact</label><input id="contact" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border outline-none"></div>
+                        <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-1.5">Bio</label><textarea id="bio" rows="2" class="w-full bg-slate-100/50 px-5 py-3.5 rounded-2xl border outline-none resize-none"></textarea></div>
+
+                        <button onclick="addDoctor()" class="w-full mt-6 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold py-4 rounded-2xl shadow-lg hover:-translate-y-0.5 transition-transform">Save Doctor Record</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DOCTOR CARDS GRID -->
+            <div class="xl:col-span-8 h-full flex flex-col">
+                <div class="bg-white/70 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white overflow-hidden flex-1 flex flex-col">
+                    <div class="p-8 border-b border-slate-100 flex justify-between items-center">
+                        <h2 class="text-xl font-extrabold text-slate-800">Medical Staff</h2>
+                    </div>
+
+                    <div class="overflow-y-auto flex-1 p-6" id="doctorsGridContainer">
+                        <div id="doctorsGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Cards will be dynamically injected here -->
+                            <div class="col-span-full text-center py-10 text-slate-400 font-medium">Loading doctors...</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- EDIT MODAL -->
+<div id="modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 flex justify-center items-center p-4">
+    <div class="bg-white/90 backdrop-blur-xl p-8 rounded-[2rem] w-full max-w-md shadow-2xl border border-white">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-extrabold text-slate-800">Edit Doctor</h2>
+            <button onclick="closeModal()" class="text-slate-400 bg-slate-100 p-2.5 rounded-full hover:bg-slate-200">X</button>
+        </div>
+        <input type="hidden" id="editId">
+        <div class="space-y-4">
+            <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-2">Name</label><input id="editName" class="w-full bg-slate-50 px-5 py-4 rounded-2xl border outline-none"></div>
+            <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-2">Email</label><input id="editEmail" type="email" class="w-full bg-slate-50 px-5 py-4 rounded-2xl border outline-none" disabled title="Cannot edit email directly"></div>
+            <div class="grid grid-cols-2 gap-4">
+                <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-2">Dept</label><select id="editDepartment" class="w-full bg-slate-50 px-5 py-4 rounded-2xl border outline-none"></select></div>
+                <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-2">Position</label><select id="editPosition" class="w-full bg-slate-50 px-5 py-4 rounded-2xl border outline-none"><option value="Specialist">Specialist</option><option value="Surgeon">Surgeon</option><option value="Vice President (VP)">Vice President (VP)</option><option value="Senior Consultant">Senior Consultant</option><option value="Resident">Resident</option></select></div>
+            </div>
+            <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-2">Contact</label><input id="editContact" class="w-full bg-slate-50 px-5 py-4 rounded-2xl border outline-none"></div>
+            <div><label class="block text-xs font-extrabold text-slate-400 uppercase mb-2">Bio</label><textarea id="editBio" rows="3" class="w-full bg-slate-50 px-5 py-4 rounded-2xl border outline-none resize-none"></textarea></div>
+        </div>
+        <div class="mt-8">
+            <button onclick="updateDoctor()" class="w-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold py-4 rounded-2xl shadow-lg hover:-translate-y-0.5 transition-transform">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+    const API = "http://localhost:8080/doctors";
+    const USERS_API = "http://localhost:8080/users";
+    const DEPTS_API = "http://localhost:8080/departments";
+
+    function showDocMessage(type, msg) {
+        const errBox = document.getElementById('docError');
+        const succBox = document.getElementById('docSuccess');
+        errBox.classList.add('hidden'); succBox.classList.add('hidden');
+        if(type === 'error') { errBox.innerText = msg; errBox.classList.remove('hidden'); }
+        else { succBox.innerText = msg; succBox.classList.remove('hidden'); setTimeout(() => succBox.classList.add('hidden'), 3000); }
+    }
+
+    async function loadDepartmentsDropdown() {
+        try {
+            const res = await fetch(DEPTS_API);
+            const depts = await res.json();
+            let options = '<option value="" disabled selected>Select Dept...</option>';
+            depts.forEach(d => { options += `<option value="${d.name}">${d.name}</option>`; });
+            document.getElementById('department').innerHTML = options;
+            document.getElementById('editDepartment').innerHTML = options;
+        } catch (err) { console.error("Failed to load departments."); }
+    }
+
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') input.type = 'text'; else input.type = 'password';
+    }
+
+    function toggleTablePass(id) {
+        const passSpan = document.getElementById(`pass-val-${id}`);
+        const actualPass = passSpan.getAttribute('data-pass');
+        if (passSpan.innerText === '••••••••') {
+            passSpan.innerText = actualPass;
+            passSpan.classList.replace('text-slate-400', 'text-slate-800');
+            passSpan.classList.remove('tracking-[0.25em]');
+        } else {
+            passSpan.innerText = '••••••••';
+            passSpan.classList.replace('text-slate-800', 'text-slate-400');
+            passSpan.classList.add('tracking-[0.25em]');
+        }
+    }
+
+    function logout() { if (confirm("Log out?")) { localStorage.removeItem('currentUser'); window.location.href = 'auth.html'; } }
+
+    // --- RENDER DOCTORS AS CARDS ---
+    function loadDoctors() {
+        fetch(API).then(res => res.json()).then(data => {
+            let html = "";
+
+            if(data.length === 0) {
+                document.getElementById("doctorsGrid").innerHTML = `<div class="col-span-full text-center py-20 text-slate-400 font-medium">No doctors registered yet.</div>`;
+                return;
+            }
+
+            data.reverse().forEach(d => {
+                const initials = d.name ? d.name.replace(/^Dr\.\s*/i, "").substring(0, 2).toUpperCase() : "DR";
+                const safePass = d.password ? d.password : 'Not Found';
+                const safeDept = d.department ? d.department : 'Unassigned';
+                const safePos = d.position ? d.position : 'N/A';
+                const safeBio = d.bio ? d.bio : 'No bio provided';
+
+                // SECURE JSON ENCODING FOR EDIT BUTTON
+                const docData = JSON.stringify({
+                    id: d.id, name: d.name, email: d.email, dept: safeDept, pos: safePos, contact: d.contactNumber, bio: safeBio
+                }).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+                html += `
+                <div class="bg-white/80 backdrop-blur-xl rounded-[1.5rem] border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all p-6 flex flex-col h-full group">
+
+                    <!-- Header (Badges moved under name) -->
+                    <div class="flex items-start gap-4 mb-5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-50 text-blue-600 flex-shrink-0 flex items-center justify-center font-extrabold text-lg shadow-inner mt-1">${initials}</div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-lg font-extrabold text-slate-800 leading-tight break-words">${d.name}</h3>
+                            <p class="text-[11px] font-semibold text-slate-500 break-all mb-2.5">${d.email}</p>
+
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-md text-[9px] font-extrabold uppercase tracking-widest leading-none">${safeDept}</span>
+                                <span class="bg-slate-100 text-slate-500 px-2.5 py-1 rounded-md text-[9px] font-extrabold uppercase tracking-widest leading-none">${safePos}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details Body -->
+                    <div class="bg-slate-50/70 rounded-2xl p-5 mb-5 flex-1 border border-slate-100 flex flex-col justify-center">
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
+
+                            <!-- Contact Box -->
+                            <div class="min-w-0">
+                                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Contact</p>
+                                <div class="bg-white px-3 py-2.5 rounded-xl border border-slate-100 text-sm font-bold text-slate-700 shadow-sm truncate">
+                                    ${d.contactNumber}
+                                </div>
+                            </div>
+
+                            <!-- Password Box (Fixed eye logic with flex-1 overflow-hidden) -->
+                            <div class="min-w-0">
+                                <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Password</p>
+                                <div class="bg-white px-3 py-2.5 rounded-xl border border-slate-100 flex items-center justify-between shadow-sm w-full">
+                                    <div class="flex-1 overflow-hidden">
+                                        <span id="pass-val-${d.id}" class="text-sm font-bold text-slate-400 tracking-[0.25em] block truncate" data-pass="${safePass}">••••••••</span>
+                                    </div>
+                                    <button onclick="toggleTablePass(${d.id})" class="text-slate-400 hover:text-blue-600 transition-colors focus:outline-none ml-2 flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Bio -->
+                        <div class="mt-auto pt-1">
+                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Biography</p>
+                            <p class="text-sm text-slate-500 leading-relaxed line-clamp-2" title="${safeBio}">${safeBio}</p>
+                        </div>
+                    </div>
+
+                    <!-- Footer Actions -->
+                    <div class="flex justify-end gap-3 mt-auto pt-2">
+                        <button onclick="openEdit(this.dataset.doc)" data-doc="${docData}" class="px-6 py-2.5 bg-slate-50 hover:bg-blue-50 text-slate-600 hover:text-blue-600 border border-slate-200 hover:border-blue-200 text-xs font-extrabold rounded-xl transition-colors shadow-sm w-full sm:w-auto text-center">Edit</button>
+                        <button onclick="deleteDoctor(${d.id})" class="px-6 py-2.5 bg-rose-50 hover:bg-rose-500 text-rose-500 hover:text-white border border-rose-100 hover:border-rose-500 text-xs font-extrabold rounded-xl transition-colors shadow-sm w-full sm:w-auto text-center">Remove</button>
+                    </div>
+                </div>`;
+            });
+
+            document.getElementById("doctorsGrid").innerHTML = html;
+        }).catch(err => {
+            document.getElementById("doctorsGrid").innerHTML = `<div class="col-span-full text-center py-20 text-rose-500 font-bold">Error loading doctors. Please ensure the server is running.</div>`;
+        });
+    }
+
+    // --- ADD DOCTOR ---
+    async function addDoctor() {
+        showDocMessage('', '');
+        let name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const pass = document.getElementById("password").value;
+        const dept = document.getElementById("department").value;
+        const pos = document.getElementById("position").value;
+        const contact = document.getElementById("contact").value;
+        const bio = document.getElementById("bio").value;
+
+        if (!name || !email || !pass || !dept || !pos || !bio) {
+            alert("Missing Information: Please fill out every field before saving.");
+            return showDocMessage('error', "All fields are required!");
+        }
+        if (pass !== document.getElementById("confirmPassword").value) {
+            alert("Passwords do not match!");
+            return showDocMessage('error', "Passwords mismatch!");
+        }
+
+        if (!name.toLowerCase().startsWith("dr.")) name = "Dr. " + name;
+
+        try {
+            // 1. Try to save Login Data
+            const userRes = await fetch(`${USERS_API}/register`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ fullName: name, email: email, password: pass, role: "DOCTOR" }) });
+            if(!userRes.ok) throw new Error("This email is already registered in the system! Try another one.");
+
+            // 2. Try to save Doctor Profile
+            const docRes = await fetch(API, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ name: name, email: email, department: dept, position: pos, contactNumber: contact, bio: bio }) });
+            if(!docRes.ok) throw new Error("The Database rejected the Doctor Profile details!");
+
+            // 3. Clear form and reload
+            document.getElementById("name").value = ""; document.getElementById("email").value = ""; document.getElementById("password").value = ""; document.getElementById("confirmPassword").value = ""; document.getElementById("contact").value = ""; document.getElementById("bio").value = "";
+
+            loadDoctors();
+            showDocMessage('success', "Doctor Registered Successfully!");
+            alert("Success! Doctor has been saved to the database.");
+
+        } catch (err) {
+            showDocMessage('error', err.message);
+            alert("SYSTEM ERROR: " + err.message);
+        }
+    }
+
+    function deleteDoctor(id) {
+        if(confirm("Remove this doctor permanently?")) {
+            fetch(`${API}/${id}`,{method:"DELETE"}).then(()=>loadDoctors());
+        }
+    }
+
+    function openEdit(docString) {
+        const doc = JSON.parse(docString);
+        document.getElementById("modal").classList.remove("hidden");
+        document.getElementById("editId").value = doc.id;
+        document.getElementById("editName").value = doc.name;
+        document.getElementById("editEmail").value = doc.email || '';
+        document.getElementById("editDepartment").value = doc.dept || '';
+        document.getElementById("editPosition").value = doc.pos || '';
+        document.getElementById("editContact").value = doc.contact || '';
+        document.getElementById("editBio").value = doc.bio || '';
+    }
+
+    function closeModal() { document.getElementById("modal").classList.add("hidden"); }
+
+    function updateDoctor() {
+        const id = document.getElementById("editId").value;
+        fetch(`${API}/${id}`, {
+            method: "PUT", headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                id: id,
+                name: document.getElementById("editName").value,
+                email: document.getElementById("editEmail").value,
+                department: document.getElementById("editDepartment").value,
+                position: document.getElementById("editPosition").value,
+                contactNumber: document.getElementById("editContact").value,
+                bio: document.getElementById("editBio").value
+            })
+        }).then(res => {
+            if(!res.ok) { alert("Update failed"); }
+            closeModal();
+            loadDoctors();
+        });
+    }
+
+    // Initialize Page
+    loadDepartmentsDropdown();
+    loadDoctors();
+</script>
+</body>
+</html>

@@ -21,7 +21,7 @@ public class PrescriptionController {
 
     @PostMapping
     public ResponseEntity<?> addPrescription(@RequestBody Prescription prescription) {
-        // Auto-fill date fields server-side if frontend didn't provide them
+     
         if (prescription.getPrescriptionDate() == null || prescription.getPrescriptionDate().isBlank()) {
             prescription.setPrescriptionDate(LocalDate.now().toString());
         }
@@ -44,13 +44,13 @@ public class PrescriptionController {
         return ResponseEntity.ok(prescriptionRepository.findByDoctorEmail(email));
     }
 
-    // Standard REST endpoint: GET /prescriptions
+    
     @GetMapping
     public ResponseEntity<List<Prescription>> getAllPrescriptionsStandard() {
         return ResponseEntity.ok(prescriptionRepository.findAll());
     }
 
-    // Legacy endpoint kept for backward compatibility: GET /prescriptions/getAll
+    
     @GetMapping("/getAll")
     public ResponseEntity<List<Prescription>> getAllPrescriptions() {
         return ResponseEntity.ok(prescriptionRepository.findAll());

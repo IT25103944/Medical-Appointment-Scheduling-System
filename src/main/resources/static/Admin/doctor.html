@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareSync – Doctor Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .bg-mesh { background-color: #f8fafc; background-image: radial-gradient(at 0% 0%, hsla(217,100%,96%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(228,100%,97%,1) 0, transparent 50%); }
+        .nav-link { transition: all 0.2s; border-left: 3px solid transparent; }
+        .nav-link:hover { background: rgba(255,255,255,0.06); color: white; }
+        .nav-link.active { background: rgba(37,99,235,0.18); color: #93c5fd; border-left-color: #3b82f6; }
+    </style>
+    <link rel="stylesheet" href="/professional-ui.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased h-screen overflow-hidden flex">
+
+<aside class="w-56 bg-[#0f172a] border-r border-slate-800/60 hidden md:flex flex-col z-30 shrink-0">
+    <div class="h-16 flex items-center px-5 border-b border-slate-800/60 shrink-0">
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <span class="text-lg font-extrabold text-white tracking-tight">Care<span class="text-blue-400">Sync</span></span>
+        </div>
+    </div>
+    <div class="px-3 pt-4 pb-2 shrink-0">
+        <div class="flex items-center gap-3 bg-slate-800/50 rounded-xl p-2.5 border border-slate-700/40">
+            <div id="sidebarAvatar" class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-extrabold text-xs flex-shrink-0">SA</div>
+            <div class="min-w-0">
+                <p id="sidebarName" class="text-xs font-bold text-white truncate">System Admin</p>
+                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Administrator</p>
+            </div>
+        </div>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
+        <p class="px-3 text-[9px] font-bold text-slate-600 uppercase tracking-widest mb-1.5 mt-1">Navigation</p>
+        <a href="admin-dashboard.html" class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-400 text-xs font-semibold" style="padding-left:calc(0.75rem - 3px)">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Dashboard
+        </a>
+        <a href="patient.html" class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-400 text-xs font-semibold" style="padding-left:calc(0.75rem - 3px)">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Patients
+        </a>
+        <a href="doctor.html" class="nav-link active flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold" style="padding-left:calc(0.75rem - 3px)">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Doctors
+        </a>
+        <a href="department.html" class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-400 text-xs font-semibold" style="padding-left:calc(0.75rem - 3px)">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Departments
+        </a>
+        <a href="appointment.html" class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-400 text-xs font-semibold" style="padding-left:calc(0.75rem - 3px)">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Appointments
+        </a>
+        <a href="prescription.html" class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-400 text-xs font-semibold" style="padding-left:calc(0.75rem - 3px)">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l5 5v11a2 2 0 0 1-2 2z"/></svg>
+            Prescriptions
+        </a>
+        <a href="payment.html" class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-400 text-xs font-semibold" style="padding-left:calc(0.75rem - 3px)">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Payments
+        </a>
+        <a href="feedback.html" class="nav-link flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-400 text-xs font-semibold" style="padding-left:calc(0.75rem - 3px)">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Feedbacks
+        </a>
+    </nav>
+    <div class="p-2 border-t border-slate-800/60 shrink-0">
+        <button onclick="logout()" class="flex items-center gap-2.5 w-full px-3 py-2 text-slate-500 hover:bg-rose-900/20 hover:text-rose-400 rounded-xl text-xs font-semibold transition-colors" style="border-left:3px solid transparent">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign Out
+        </button>
+    </div>
+</aside>
+
+<main class="flex-1 flex flex-col h-screen overflow-hidden bg-mesh">
+    <header class="h-16 flex items-center justify-between px-6 shrink-0 bg-white/60 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
+        <div>
+            <h2 class="text-lg font-extrabold text-slate-900 tracking-tight">Doctor Directory</h2>
+            <p class="text-xs font-medium text-slate-400 mt-0.5">Manage hospital doctors and specialists</p>
+        </div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-[1300px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-6">
+            <!-- Form -->
+            <div class="xl:col-span-4">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sticky top-0">
+                    <h3 class="text-base font-extrabold text-slate-800 mb-5">Add Doctor</h3>
+                    <div id="docSuccess" class="hidden mb-3 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-xs font-bold"></div>
+                    <div id="docError" class="hidden mb-3 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs font-bold"></div>
+                    <div class="space-y-3.5">
+                        <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Full Name</label><input id="docName" class="w-full bg-slate-50 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 focus:bg-white focus:border-blue-400 outline-none text-sm placeholder:text-slate-400" placeholder="Dr. Jane Smith"></div>
+                        <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Email</label><input id="docEmail" type="email" class="w-full bg-slate-50 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 focus:bg-white focus:border-blue-400 outline-none text-sm placeholder:text-slate-400" placeholder="doctor@caresync.lk"></div>
+                        <div>
+                            <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Password</label>
+                            <div class="relative"><input id="docPassword" type="password" class="w-full bg-slate-50 text-slate-700 font-medium px-4 py-2.5 pr-10 rounded-xl border border-slate-200 focus:bg-white focus:border-blue-400 outline-none text-sm placeholder:text-slate-400" placeholder="••••••••">
+                            <button type="button" onclick="togglePwd('docPassword')" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-blue-500"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+                            <p class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mb-2">Password Requirements</p>
+                            <ul class="text-xs font-semibold text-slate-600 space-y-1">
+                                <li id="pwdReqLen">At least 8 characters</li>
+                                <li id="pwdReqUpper">At least 1 uppercase letter (A-Z)</li>
+                                <li id="pwdReqLower">At least 1 lowercase letter (a-z)</li>
+                                <li id="pwdReqNumber">At least 1 number (0-9)</li>
+                            </ul>
+                        </div>
+                        <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Department</label>
+                            <select id="docDept" class="w-full bg-slate-50 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 focus:bg-white focus:border-blue-400 outline-none text-sm"><option value="">Select Department...</option></select>
+                        </div>
+                        <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Specialization</label>
+                            <select id="docSpec" class="w-full bg-slate-50 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 focus:bg-white focus:border-blue-400 outline-none text-sm">
+                                <option value="">Select Specialization...</option>
+                                <option value="General Practitioner (GP)">General Practitioner (GP)</option>
+                                <option value="Specialist">Specialist</option>
+                                <option value="Consultant">Consultant</option>
+                                <option value="Senior Consultant">Senior Consultant</option>
+                                <option value="Professor Consultant">Professor Consultant</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Bio</label>
+                            <textarea id="docBio" rows="3" class="w-full bg-slate-50 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 focus:bg-white focus:border-blue-400 outline-none text-sm placeholder:text-slate-400" placeholder="Enter doctor profile summary"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Contact</label><input id="docContact" class="w-full bg-slate-50 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 outline-none text-sm placeholder:text-slate-400" placeholder="07X-XXX-XXXX"></div>
+                            <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Fee (LKR)</label><input id="docFee" type="number" class="w-full bg-slate-50 text-slate-700 font-medium px-4 py-2.5 rounded-xl border border-slate-200 outline-none text-sm placeholder:text-slate-400" placeholder="2500"></div>
+                        </div>
+                        <button onclick="addDoctor()" class="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-sm transition-colors shadow-sm shadow-blue-200">Register Doctor</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="xl:col-span-8">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                        <h3 class="text-base font-extrabold text-slate-800">Current Doctors</h3>
+                        <input id="doctorSearch" oninput="loadDoctors()" class="w-full sm:w-72 bg-slate-50 text-slate-700 font-medium px-4 py-2 rounded-xl border border-slate-200 outline-none text-sm placeholder:text-slate-400" placeholder="Search by doctor name...">
+                    </div>
+                    <div id="doctorCards" class="p-5 grid grid-cols-1 gap-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Edit Modal -->
+<div id="modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl border border-slate-100 p-6">
+        <div class="flex justify-between items-center mb-5">
+            <h3 class="text-lg font-extrabold text-slate-800">Edit Doctor</h3>
+            <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 bg-slate-100 p-2 rounded-xl text-sm font-bold">✕</button>
+        </div>
+        <input type="hidden" id="editId">
+        <input type="hidden" id="editEmail">
+        <div class="space-y-3.5">
+            <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Name</label><input id="editName" class="w-full bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 outline-none text-sm font-medium text-slate-700"></div>
+            <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Specialization</label>
+                <select id="editSpec" class="w-full bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 outline-none text-sm font-medium text-slate-700">
+                    <option value="">Select Specialization...</option>
+                    <option value="General Practitioner (GP)">General Practitioner (GP)</option>
+                    <option value="Specialist">Specialist</option>
+                    <option value="Consultant">Consultant</option>
+                    <option value="Senior Consultant">Senior Consultant</option>
+                    <option value="Professor Consultant">Professor Consultant</option>
+                </select>
+            </div>
+            <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Department</label>
+                <select id="editDept" class="w-full bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 outline-none text-sm font-medium text-slate-700"><option value="">Select...</option></select>
+            </div>
+            <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Bio</label><textarea id="editBio" rows="3" class="w-full bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 outline-none text-sm font-medium text-slate-700"></textarea></div>
+            <div>
+                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">New Password (Optional)</label>
+                <div class="relative">
+                    <input id="editPassword" type="password" class="w-full bg-slate-50 px-4 py-2.5 pr-10 rounded-xl border border-slate-200 outline-none text-sm font-medium text-slate-700" placeholder="Leave blank to keep current password">
+                    <button type="button" onclick="togglePwd('editPassword')" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-blue-500">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Contact</label><input id="editContact" class="w-full bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 outline-none text-sm font-medium text-slate-700"></div>
+                <div><label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1.5">Fee</label><input id="editFee" type="number" class="w-full bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 outline-none text-sm font-medium text-slate-700"></div>
+            </div>
+        </div>
+        <button onclick="updateDoctor()" class="w-full mt-5 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-sm transition-colors">Save Changes</button>
+    </div>
+</div>
+
+<script>
+    const API = "http://localhost:8080/doctors";
+    const USERS_API = "http://localhost:8080/users";
+    const DEPTS_API = "http://localhost:8080/departments";
+    let doctorCache = [];
+
+    (function() {
+        const s = localStorage.getItem('adminSession');
+        if (!s) { window.location.href = 'admin-login.html'; throw new Error('Unauthorized'); }
+        try {
+            const p = JSON.parse(s);
+            if (!p || p.role !== 'ADMIN') { window.location.href = 'admin-login.html'; throw new Error('Unauthorized'); }
+            const initials = p.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+            document.getElementById('sidebarName').textContent = p.name;
+            document.getElementById('sidebarAvatar').textContent = initials;
+        } catch(e) { localStorage.removeItem('adminSession'); window.location.href = 'admin-login.html'; }
+    })();
+
+    function togglePwd(id) { const i = document.getElementById(id); i.type = i.type === 'password' ? 'text' : 'password'; }
+    function logout() { if(confirm("Sign out?")) { localStorage.removeItem('adminSession'); localStorage.removeItem('currentUser'); window.location.href = 'admin-login.html'; } }
+    function isValidEmail(email) {
+        return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(String(email).trim());
+    }
+    function isValidPassword(password) {
+        const p = String(password);
+        return p.length >= 8 && /[A-Z]/.test(p) && /[a-z]/.test(p) && /[0-9]/.test(p);
+    }
+    function isValidContact(contact) {
+        return /^\d{10}$/.test(String(contact).trim());
+    }
+    function showDocMessage(type, msg) {
+        const e = document.getElementById('docError'), s = document.getElementById('docSuccess');
+        e.classList.add('hidden'); s.classList.add('hidden');
+        if (type === 'error') { e.textContent = msg; e.classList.remove('hidden'); }
+        else { s.textContent = msg; s.classList.remove('hidden'); }
+        setTimeout(() => { e.classList.add('hidden'); s.classList.add('hidden'); }, 4000);
+    }
+    function updatePasswordRequirements(password) {
+        const checks = [
+            { id: 'pwdReqLen', ok: password.length >= 8 },
+            { id: 'pwdReqUpper', ok: /[A-Z]/.test(password) },
+            { id: 'pwdReqLower', ok: /[a-z]/.test(password) },
+            { id: 'pwdReqNumber', ok: /[0-9]/.test(password) }
+        ];
+        checks.forEach(({ id, ok }) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.remove('text-emerald-600', 'text-rose-600', 'text-slate-600');
+            el.classList.add(ok ? 'text-emerald-600' : 'text-rose-600');
+        });
+    }
+
+    async function loadDepts(selectId) {
+        const res = await fetch(DEPTS_API);
+        const data = await res.json();
+        let opts = '<option value="">Select Department...</option>';
+        data.forEach(d => opts += `<option value="${d.name}">${d.name}</option>`);
+        document.getElementById(selectId).innerHTML = opts;
+    }
+
+    function toggleCardPassword(id, btn) {
+        const el = document.getElementById(`pwd-${id}`);
+        if (!el) return;
+        const doctor = doctorCache.find(d => String(d.id) === String(id));
+        const rawPwd = (doctor && doctor.password) ? String(doctor.password) : '';
+        const hidden = el.dataset.hidden === '1';
+        if (hidden) {
+            el.textContent = rawPwd || 'N/A';
+            el.dataset.hidden = '0';
+            btn.textContent = 'Hide';
+        } else {
+            el.textContent = rawPwd ? '•'.repeat(Math.min(rawPwd.length, 12)) : 'N/A';
+            el.dataset.hidden = '1';
+            btn.textContent = 'Show';
+        }
+    }
+
+    function openEditById(id) {
+        const d = doctorCache.find(x => String(x.id) === String(id));
+        if (!d) {
+            showDocMessage('error', 'Doctor details not found.');
+            return;
+        }
+        openEdit(
+            d.id,
+            d.email || '',
+            d.password || '',
+            d.name || '',
+            d.position || '',
+            d.department || '',
+            d.bio || '',
+            d.contactNumber || '',
+            d.consultationFee || 0
+        );
+    }
+
+    function loadDoctors() {
+        fetch(API).then(r => r.json()).then(data => {
+            doctorCache = Array.isArray(data) ? data : [];
+            const search = (document.getElementById('doctorSearch')?.value || '').trim().toLowerCase();
+            let cards = "";
+            doctorCache.filter(d => !search || (d.name || '').toLowerCase().includes(search)).forEach(d => {
+                const initials = d.name ? d.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() : 'DR';
+                const pwd = d.password || '';
+                const masked = pwd ? '•'.repeat(Math.min(pwd.length, 12)) : 'N/A';
+                cards += `<div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm flex-shrink-0">${initials}</div>
+                            <div class="min-w-0">
+                                <p class="text-base font-extrabold text-slate-800 truncate">${d.name || 'N/A'}</p>
+                                <p class="text-xs text-slate-400 font-semibold break-all leading-relaxed">${d.email || ''}</p>
+                            </div>
+                        </div>
+                        <span class="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-lg text-xs font-bold">${d.department || 'N/A'}</span>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
+                        <div><p class="text-[10px] uppercase tracking-widest text-slate-400 font-extrabold">Contact</p><p class="font-semibold text-slate-700">${d.contactNumber || 'N/A'}</p></div>
+                        <div><p class="text-[10px] uppercase tracking-widest text-slate-400 font-extrabold">Position</p><p class="font-bold text-emerald-600">${d.position || 'N/A'}</p></div>
+                        <div><p class="text-[10px] uppercase tracking-widest text-slate-400 font-extrabold">Fee</p><p class="font-bold text-indigo-600">LKR ${(d.consultationFee ?? 0).toFixed(2)}</p></div>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-widest text-slate-400 font-extrabold">Password</p>
+                            <div class="flex items-center gap-2">
+                                <p id="pwd-${d.id}" data-hidden="1" class="font-bold text-slate-700">${masked}</p>
+                                <button type="button" onclick="toggleCardPassword(${d.id}, this)" class="text-xs font-bold text-blue-600 hover:text-blue-800">Show</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <p class="text-[10px] uppercase tracking-widest text-slate-400 font-extrabold">Bio</p>
+                        <p class="mt-1 text-sm font-medium text-slate-700 leading-relaxed bg-white/70 border border-slate-200 rounded-xl px-3 py-2.5 whitespace-pre-wrap break-words">${d.bio || 'N/A'}</p>
+                    </div>
+                    <div class="mt-4 flex justify-end gap-2">
+                        <button onclick="openEditById(${d.id})" class="px-3 py-1.5 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 text-xs font-bold transition-colors">Edit</button>
+                        <button onclick="deleteDoctor(${d.id})" class="px-3 py-1.5 text-rose-500 bg-rose-50 rounded-lg hover:bg-rose-100 text-xs font-bold transition-colors">Del</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById("doctorCards").innerHTML = cards || `<div class="col-span-full py-10 text-center text-slate-400 text-sm">No doctors registered yet.</div>`;
+        });
+    }
+
+    async function addDoctor() {
+        const name = document.getElementById('docName').value.trim();
+        const email = document.getElementById('docEmail').value.trim();
+        const password = document.getElementById('docPassword').value;
+        const dept = document.getElementById('docDept').value;
+        const spec = document.getElementById('docSpec').value.trim();
+        const bio = document.getElementById('docBio').value.trim();
+        const contact = document.getElementById('docContact').value.trim();
+        const feeRaw = document.getElementById('docFee').value;
+        const fee = parseFloat(feeRaw);
+        if (!name || !email || !password) return showDocMessage('error', 'Name, Email and Password are required.');
+        if (!bio) return showDocMessage('error', 'Bio is required.');
+        if (!isValidEmail(email)) return showDocMessage('error', 'Email must be in correct format (name@example.com).');
+        if (!isValidPassword(password)) return showDocMessage('error', 'Password must be at least 8 characters and include uppercase, lowercase, and number.');
+        if (contact && !isValidContact(contact)) return showDocMessage('error', 'Contact number must be exactly 10 digits.');
+        if (!feeRaw || Number.isNaN(fee) || fee < 0) return showDocMessage('error', 'Consultation fee is required and must be 0 or greater.');
+        try {
+            const uRes = await fetch(`${USERS_API}/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({fullName:name, email, password, role:'DOCTOR'}) });
+            if (!uRes.ok) throw new Error((await uRes.text()) || 'Email may already exist.');
+            const dRes = await fetch(API, {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({
+                    name,
+                    email,
+                    department: dept,
+                    position: spec,
+                    contactNumber: contact,
+                    bio,
+                    consultationFee: fee
+                })
+            });
+            if (!dRes.ok) throw new Error('Doctor record failed to save.');
+            ['docName','docEmail','docPassword','docSpec','docBio','docContact','docFee'].forEach(id => document.getElementById(id).value = '');
+            showDocMessage('success', 'Doctor registered successfully!');
+            loadDoctors();
+        } catch(err) { showDocMessage('error', err.message); }
+    }
+
+    function deleteDoctor(id) {
+        if (confirm("Remove this doctor?")) {
+            fetch(`${API}/${id}`, {method:'DELETE'}).then(() => loadDoctors());
+        }
+    }
+
+    function openEdit(id, email, password, name, spec, dept, bio, contact, fee) {
+        document.getElementById('modal').classList.remove('hidden');
+        document.getElementById('editId').value = id;
+        document.getElementById('editEmail').value = email;
+        document.getElementById('editName').value = name;
+        document.getElementById('editSpec').value = spec;
+        document.getElementById('editBio').value = bio;
+        document.getElementById('editContact').value = contact;
+        document.getElementById('editFee').value = fee;
+            document.getElementById('editPassword').value = password || '';
+        loadDepts('editDept').then(() => { document.getElementById('editDept').value = dept; });
+    }
+
+    function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+
+    function updateDoctor() {
+        const id = document.getElementById('editId').value;
+        const editName = document.getElementById('editName').value.trim();
+        const editDept = document.getElementById('editDept').value;
+        const editPosition = document.getElementById('editSpec').value.trim();
+        const editContact = document.getElementById('editContact').value.trim();
+        const editBio = document.getElementById('editBio').value.trim();
+        const editPassword = document.getElementById('editPassword').value;
+        const editFeeRaw = document.getElementById('editFee').value;
+        const editFee = parseFloat(editFeeRaw);
+        if (!editName || !editDept || !editPosition) {
+            showDocMessage('error', 'Name, Department and Specialization are required.');
+            return;
+        }
+        if (editContact && !isValidContact(editContact)) {
+            showDocMessage('error', 'Contact number must be exactly 10 digits.');
+            return;
+        }
+        if (!editBio) {
+            showDocMessage('error', 'Bio is required.');
+            return;
+        }
+        if (editPassword && !isValidPassword(editPassword)) {
+            showDocMessage('error', 'New password must be at least 8 characters and include uppercase, lowercase, and number.');
+            return;
+        }
+        if (!editFeeRaw || Number.isNaN(editFee) || editFee < 0) {
+            showDocMessage('error', 'Consultation fee is required and must be 0 or greater.');
+            return;
+        }
+        const data = {
+            name: editName,
+            email: document.getElementById('editEmail').value.trim(),
+            password: editPassword,
+            position: editPosition,
+            department: editDept,
+            contactNumber: editContact,
+            bio: editBio,
+            consultationFee: editFee
+        };
+        fetch(`${API}/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) })
+            .then(async (res) => {
+                if (!res.ok) {
+                    let msg = 'Failed to update doctor details.';
+                    try { const body = await res.json(); msg = body.error || msg; } catch(_) {}
+                    throw new Error(msg);
+                }
+                showDocMessage('success', 'Doctor details updated successfully!');
+                closeModal();
+                loadDoctors();
+            })
+            .catch(err => showDocMessage('error', err.message || 'Failed to update doctor details.'));
+    }
+
+    loadDepts('docDept');
+    loadDoctors();
+    document.getElementById('docPassword').addEventListener('input', (e) => updatePasswordRequirements(e.target.value));
+</script>
+</body>
+</html>
